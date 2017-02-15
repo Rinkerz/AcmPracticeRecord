@@ -1,0 +1,128 @@
+/*
+1、模拟时分类分清方向，判断堵塞时根据四个方向不同每一步不同，并且要不要漏了终点。
+2、不要随便的使用string，保存大量字符串可能还是char数组好。
+3、point结构体其实可以不要，懒得改了。
+3、递归回溯的按顺序来，先改变的后改回去。判断语句放最前面。
+4、估算范围，数组开好避免越界，本题地图坐标有负，小心一点就行。
+5、题目有一条不许重复访问城市的要求没写，略坑。
+6、以后检查bug最好也要仔细检查代码，不要一味通过人工对照一步一步查。
+*/
+#include<iostream>
+#include<fstream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<vector>
+#include<set>
+#include<algorithm>
+using namespace std;
+#define MAXN 60
+#define mem(x) memset(x,0,sizeof(x))
+#define _b " "
+
+fstream fstr("/home/rinker/Desktop/new file");
+ofstream fstr2("/home/rinker/Desktop/new file2");
+typedef struct point{
+    int x,y;
+    point():x(0),y(0){}
+    point(int x,int y):x(x),y(y){}
+    void operator=(const point& p){
+        this->x=p.x,this->y=p.y;
+    }
+    bool operator==(const point& p){
+    return this->x==p.x&&this->y==p.y;
+    }
+}point;
+const char* IdToDir="nesw";
+const int dx[]={0,1,0,-1};
+const int dy[]={1,0,-1,0};
+
+int last,block,cnt;
+char blocked[300][300];
+char visited[300][300];
+char path[21];
+char ans[300][21];
+point cur_p(0,0);int c=0;
+
+bool isBlocked(int cur,int dir)
+{
+    if(dir==1){
+        for(int x=cur_p.x;x!=cur_p.x+(cur+1)*dx[dir];x++)
+            if(blocked[x+150][cur_p.y+150]) return 1;
+        return 0;
+    }else if(dir==3){
+        for(int x=cur_p.x;x!=cur_p.x+(cur+1)*dx[dir];x--)
+            if(blocked[x+150][cur_p.y+150]) return 1;
+        return 0;
+    }else if(dir==0){
+        for(int y=cur_p.y;y!=cur_p.y+(cur+1)*dy[dir];y++)
+            if(blocked[cur_p.x+150][y+150]) return 1;
+        return 0;
+    }else if(dir==2){
+        for(int y=cur_p.y;y!=cur_p.y+(cur+1)*dy[dir];y--)
+            if(blocked[cur_p.x+150][y+150]) return 1;
+        return 0;
+    }
+}
+
+void dfs(int cur,int dir)
+{
+    if(cur==last+1&&cur_p.x==0&&cur_p.y==0){
+        for(int i=0;i<last;i++)
+            ans[cnt][i]=path[i];
+        cnt++;
+        return;
+    }
+    if(cur>=last+1)          return;//{for(int i=0;i<last;i++)cout<<;cout<<endl;return;}
+    if(isBlocked(cur,dir))   return;
+
+
+    if(visited[cur_p.x+cur*dx[dir]+150][cur_p.y+cur*dy[dir]+150]) return;
+    //cout<<(cur_p.x+150)<<" "<<(cur_p.y+150)<<endl;
+    visited[cur_p.x+cur*dx[dir]+150][cur_p.y+cur*dy[dir]+150]=1;
+//    for(int i=-16+150;i<150+16;i++){
+//        for(int j=-16+150;j<150+16;j++)
+//            cout<<(int)visited[j][i];
+//    cout<<endl;
+//    }cout<<endl;
+    path[cur-1]=IdToDir[dir];
+    cur_p.x+=cur*dx[dir];
+    cur_p.y+=cur*dy[dir];
+    if(dir==1||dir==2){
+    dfs(cur+1,(dir+3)%4);
+    dfs(cur+1,(dir+1)%4);
+    }
+    if(dir==3||dir==0){
+    dfs(cur+1,(dir+1)%4);
+    dfs(cur+1,(dir+3)%4);
+    }
+    visited[cur_p.x+150][cur_p.y+150]=0;
+    cur_p.x-=cur*dx[dir];
+    cur_p.y-=cur*dy[dir];
+}
+
+int main()
+{
+    int kase;cin>>kase;int x,y;
+    while(kase--)
+    {
+        cin>>last>>block;mem(path);mem(ans);mem(blocked);mem(visited);cnt=0;
+        for(int i=0;i<block;i++){
+            cin>>x>>y;
+            blocked[x+150][y+150]=1;
+        }
+
+        //for(int i=0;i<300;i++){
+          //  for(int j=0;j<300;j++)
+            //    cout<<blocked[i][j];cout<<endl;}
+        dfs(1,1);dfs(1,0);dfs(1,2);dfs(1,3);
+        for(int i=0;i<cnt;i+=2){
+            for(int j=0;j<last;j++)
+                cout<<ans[i][j];
+            cout<<endl;
+        }
+        cout<<"Found "<<cnt/2<<" golygon(s)."<<endl;
+        cout<<endl;
+    }
+}
+

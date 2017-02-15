@@ -1,0 +1,72 @@
+//2A.暴搜过的...一开始tle了一次，在使用dfs前加了一个if(!(G[i][j]<ans[0]&&ans_len==cnt))，0.9s勉强低于一秒的要求
+#include<iostream>
+#include<fstream>
+#include<cstring>
+using namespace std;
+#define maxn 32
+#define mem(x) memset(x,0,sizeof(x))
+fstream fstr("/home/rinker/Desktop/new file");
+int x,y,cnt,ans_len;
+char G[maxn][maxn],ans[maxn],tmp[maxn],vis[maxn][maxn];
+
+bool read_data()
+{
+    cin>>x>>y;if(!(x&&y))   return false;
+    mem(G);mem(ans);mem(vis);cnt=0;ans_len=0;
+    for(int i=1;i<=x;i++)
+            for(int j=1;j<=y;j++){
+                cin>>G[i][j];if(G[i][j]!='#')  cnt++;
+            }
+    return true;
+}
+
+void update_ans(int cur)
+{
+    if(cur>ans_len){
+        for(int i=0;i<cur;i++)
+            ans[i]=tmp[i];
+        ans_len=cur;
+    }
+    else
+        for(int i=0;i<cur;i++)
+            if(ans[i]<tmp[i])
+                for(int i=0;i<cur;i++)
+                    ans[i]=tmp[i];
+            else if(ans[i]>tmp[i])  break;
+}
+
+void dfs(int i,int j,int cur)
+{   //cout<<"cur"<<cur<<(cur==cnt)<<vis[i][j]<<(G[i][j]==0)<<(G[i][j]=='#')<<endl;
+    if(cur==cnt||vis[i][j]||G[i][j]==0||G[i][j]=='#')    {if(cur>=ans_len)update_ans(cur);return;}
+
+    vis[i][j]=1;
+    tmp[cur]=G[i][j];
+
+    dfs(i+1,j,cur+1);
+    dfs(i-1,j,cur+1);
+    dfs(i,j+1,cur+1);
+    dfs(i,j-1,cur+1);
+
+    tmp[cur]=0;
+    vis[i][j]=0;
+}
+
+void find_biggest()
+{
+    for(int i=1;i<=x;i++)
+            for(int j=1;j<=y;j++)    if(G[i][j]!='#')
+                if(!(G[i][j]<ans[0]&&ans_len==cnt))
+                    dfs(i,j,0);
+    for(int i=0;i<ans_len;i++)
+        cout<<ans[i];cout<<endl;
+
+}
+
+int main()
+{
+    while(read_data()){
+        find_biggest();
+    }
+    return 0;
+}
+

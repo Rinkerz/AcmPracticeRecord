@@ -1,0 +1,47 @@
+#include<iostream>
+#include<fstream>
+#include<deque>
+#include<vector>
+#include<map>
+#include<stack>
+
+using namespace std;
+//fstream fstr("/home/rinker/Desktop/new file");
+int ns;
+map<int,int> m;
+
+void build(int p)
+{
+    int v;cin>>v;
+    if(v==-1)return;
+    if(!m.count(p))ns++;
+    m[p]+=v;
+    build(p-1);build(p+1);
+}
+
+bool init()
+{
+    int v;cin>>v;m={};
+    if(v==-1)return false;
+    int p=0;m[p]+=v;ns=1;
+    build(p-1);build(p+1);
+}
+
+int main()
+{
+    int n=0;
+    while(init())
+    {
+        int cnt=0;
+        cout<<"Case "<<++n<<":"<<endl;
+        for(auto &w:m)
+        {
+            cnt++;
+            cout<<w.second;
+            if(cnt!=ns) cout<<" ";
+        }
+        cout<<"\n\n";
+    }
+    return 0;
+}
+

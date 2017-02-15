@@ -1,0 +1,165 @@
+#include<cstdio>  
+#include<cstring>  
+  
+int n,L;  
+int ans[100];  
+bool flag;  
+int cnt;  
+  
+bool judge(int cur) {  
+  
+    for(int i = 1; i <= (cur+1) / 2 ; i++) {  
+        bool equal = 1;  
+        for(int j = 0;  j < i; j++)  
+            if(ans[cur-j] != ans[cur-i-j]) {  
+                equal = 0;  
+                break;  
+            }     
+        if(equal)  
+            return false;     
+    }  
+    return true;  
+}  
+  
+void output(int cur) {  
+    for(int i = 0; i <= cur ; i++) {  
+        if(i % 4 == 0 && i > 0) {  
+            if(i % 64 == 0 && i > 0)   
+                printf("\n");  
+            else  
+                printf(" ");      
+        }  
+    printf("%c",'A' + ans[i]);  
+    }  
+    printf("\n%d\n",cur+1);  
+}  
+  
+int dfs(int cur) {  
+  
+    for(int i = 0; i < L; i++) {  
+        ans[cur] = i;  
+        if(judge(cur)) {  
+            cnt++;  
+            if(cnt == n ) {  
+                output(cur);  
+                return 1;  
+            }  
+            if(dfs(cur+1))  
+                return 1;  
+        }  
+    }  
+    return 0;  
+}  
+  
+int main() {  
+    while(scanf("%d%d",&n,&L) != EOF && n + L) {   
+        cnt = 0;  
+        dfs(0);   
+    }  
+    return 0;  
+} 
+//下面的代码自己写的，和上面的输出一模一样，不知道为什么WA。。。好生气啊！！！
+#include<iostream>
+#include<cstring>
+#include<cmath>
+#include<fstream>
+using namespace std;
+fstream fstr("/home/rinker/Desktop/new file");
+int n,L,cnt;
+int s[1000];
+int dfs(int cur)
+{
+    if(cnt++==n)
+    {
+        int t=1,r=1;
+        for(int i=0;i<cur;i++){
+            fstr<<(char)('A'+s[i]);
+            if(!(t++%4)&&(r%64)&&cur!=i+1) fstr<<" ";
+            if(!(r++%64))   fstr<<endl;
+        }
+        fstr<<endl;#include<iostream>
+#include<cstring>
+#include<cmath>
+#include<fstream>
+using namespace std;
+fstream fstr("/home/rinker/Desktop/new file");
+int n,L,cnt;
+int s[1000];
+int dfs(int cur)
+{
+    if(cnt++==n)
+    {
+        int t=1,r=1;
+        for(int i=0;i<cur;i++){
+            fstr<<(char)('A'+s[i]);
+            if(!(t++%4)&&(r%64)&&cur!=i+1) fstr<<" ";
+            if(!(r++%64)&&cur%64)   fstr<<endl;
+        }
+        fstr<<endl;
+        fstr<<cur;
+        return 1;
+    }
+    for(int i=0;i<L;i++)
+    {
+        s[cur]=i;
+        int ok=1;
+        for(int j=1;j*2<=cur+1;j++)
+        {
+            int e=1;
+            for(int k=0;k!=j;k++)
+                if(s[cur-k]!=s[cur-k-j]) {e=0;break;}
+            if(e)   {ok=0;break;}
+        }
+        if(ok)  if(dfs(cur+1)) return 1;
+    }
+    return 0;
+}
+
+int main()
+{
+    int t=0;int f=1;L=4;
+    for(n=1;n<80;n++)
+    {
+        if((n>1&&L==1)||(n>6&&L==2)) continue;
+        if(f)f=0;
+        else fstr<<endl;
+        memset(s,0,sizeof(0));
+        cnt=0;
+        dfs(0);
+    }
+    return 0;
+}
+
+        fstr<<cur;
+        return 1;
+    }
+    for(int i=0;i<L;i++)
+    {
+        s[cur]=i;
+        int ok=1;
+        for(int j=1;j*2<=cur+1;j++)
+        {
+            int e=1;
+            for(int k=0;k!=j;k++)
+                if(s[cur-k]!=s[cur-k-j]) {e=0;break;}
+            if(e)   {ok=0;break;}
+        }
+        if(ok)  if(dfs(cur+1)) return 1;
+    }
+    return 0;
+}
+
+int main()
+{
+    int t=0;int f=1;L=3;
+    for(n=1;n<80;n++)
+    {
+        if(f)f=0;
+        else fstr<<'\n';
+        memset(s,0,sizeof(0));
+        cnt=0;
+        dfs(0);
+    }
+    return 0;
+}
+

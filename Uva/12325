@@ -1,0 +1,39 @@
+//学习一下分类枚举，以及能算的地方就不要循环！！
+#include<iostream>
+#include<fstream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<vector>
+#include<algorithm>
+using namespace std;
+#define minN 20
+#define mem(x) memset(x,0,sizeof(x))
+
+fstream fstr("/home/rinker/Desktop/new file");
+
+int main()
+{
+    int T;cin>>T;int cnt=0;long N,S1,V1,S2,V2;long value;
+    while(cnt++!=T)
+    {
+        cin>>N>>S1>>V1>>S2>>V2;int i,j;value=0;
+        long tmp=min(N/S1,N/S2);tmp=min(tmp,S1);tmp=min(tmp,S2);
+        if(tmp==N/S1){
+            for(i=0;i*S1<=N;i++)
+                j=(N-i*S1)/S2,value=max(value,i*V1+j*V2);
+        }else if(tmp==N/S2){
+            for(i=0;i*S2<=N;i++)
+                j=(N-i*S2)/S1,value=max(value,i*V2+j*V1);
+        }else{
+            if(S1*V2>S2*V1)
+            for(i=0;i<=S2;i++)
+                j=(N-i*S1)/S2,value=max(value,i*V1+j*V2);
+            else
+            for(i=0;i<=S1;i++)
+                j=(N-i*S2)/S1,value=max(value,i*V2+j*V1);
+        }
+        cout<<"Case #"<<cnt<<": "<<value<<endl;
+    }
+}
+

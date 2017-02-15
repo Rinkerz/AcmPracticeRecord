@@ -1,0 +1,102 @@
+//bug可能还挺多的。。不想改了，这题目有点烦
+#include<iostream>
+#include<fstream>
+#include<cstring>
+using namespace std;
+#define maxn 30
+#define mem(x) memset(x,0,sizeof(x))
+fstream fstr("/home/rinker/Desktop/new file");
+char G[maxn][maxn],ans[maxn][maxn],vis[maxn][maxn];
+char lx[maxn],ly[maxn];//leader's postion
+int N,K;
+
+bool read_data()
+{
+    fstr>>N>>K;if(!N&&!K)   return false;
+    mem(G);mem(ans);mem(vis);
+    int cnt=0;
+    for(int i=0;i<N;i++)
+            for(int j=0;j<N;j++){
+                fstr>>G[i][j];
+                if(G[i][j]!='.'){lx[cnt]=i;ly[cnt++]=j;}
+            }
+    return true;
+}
+
+bool noproblem(int x0,int y0,int m,int n)
+{
+    if(x0+m>N||y0+n>N) return false;
+    for(int i=x0;i<=m;i++)
+        for(int j=y0;j<=n;j++)
+            if(vis[i][j])  return false;
+    return true;
+}
+
+void backup(int x0,int y0,int m,int n,char backups[][maxn])
+{
+    for(int i=x0;i<=m;i++)
+        for(int j=y0;j<=n;j++)
+            backups[i][j]=ans[i][j];
+}
+
+void change(int cur,int x0,int y0,int m,int n)
+{
+    for(int i=x0;i<=m;i++)
+        for(int j=y0;j<=n;j++)
+            ans[i][j]=cur+'A',vis[i][j]=1;
+}
+
+void recover(int x0,int y0,int m,int n,char backups[][maxn])
+{
+    for(int i=x0;i<=m;i++)
+        for(int j=y0;j<=n;j++)
+            ans[i][j]=backups[i][j],vis[i][j]=0;
+}
+
+bool dfs(int cur)
+{cout<<"cur"<<cur<<endl;
+    if(cur==K)  return true;
+
+    int x=lx[cur];int y=ly[cur];int S=G[x][y]-'0';
+    int m[maxn];int ms=0;
+    for(int i=1;i<=S;i++)
+        if(S%i==0)  m[ms++]=i;
+    int n[maxn];
+    for(int i=0;i<ms;i++)
+        n[i]=S/m[i];
+    char backups[maxn][maxn];
+    for(int a=0;a<ms;a++)
+        for(int b=max(0,x-m[a]+1);b<=x;b++){cout<<m[a]<<n[a]<<" "<<max(0,x-m[a]+1)<<" "<<x<<" "<<max(0,y-n[a]+1)<<" "<<y<<endl;
+            for(int c=max(0,y-n[a]+1);c<=y;c++){
+                cout<<(int)noproblem(b,c,m[a],n[a])<<" no?"<<endl;
+                if(noproblem(b,c,m[a],n[a])){
+                    backup(b,c,m[a],n[a],backups);
+                    change(cur,b,c,m[a],n[a]);
+                    if(dfs(cur+1))  return true;
+                    recover(b,c,m[a],n[a],backups);
+                }
+            }}
+    return false;
+}
+
+void arrange()
+{
+    dfs(0);
+}
+
+int main()
+{
+    while(read_data()){
+        arrange();
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++)
+                cout<<G[i][j];cout<<endl;
+        }
+        for(int i=0;i<N;i++){
+            for(int j=0;j<N;j++)
+                cout<<ans[i][j];cout<<endl;
+        }
+    }
+    return 0;
+}
+

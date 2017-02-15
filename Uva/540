@@ -1,0 +1,122 @@
+//总结一下经验教训，一个是再说一遍，不要使用未赋值的变量，另一个是每个循环都会更新的数据在循环体内声明不易出错。
+//然后是新重点，灵活运用map，用空间换时间。根据题目需求灵活开数据结构，本题中的队列就用的比较精致。
+#include<iostream>
+#include<fstream>
+#include<queue>
+#include<map>
+
+using namespace std;
+
+map<int,int> teamOf;
+
+
+int main()
+{
+    int n,m,p,cnt;cnt=0;//return 0;
+
+    //fstream fstr("/home/rinker/Desktop/new file");
+    while(cin>>n&&n)
+    {
+        cnt++;teamOf={};
+        for(int i=0;i!=n;i++)
+        {
+            cin>>m;
+            for(int j=0;j!=m;j++)
+            {
+                cin>>p;
+                teamOf[p]=i;
+            }
+        }
+        cout<<"Scenario #"<<cnt<<endl;
+        string op;queue<int> tq;queue<int> tqs[1005];
+        while(1)
+        {
+            cin>>op;
+            if(op[0]=='S')break;
+            else if(op[0]=='D'){
+                int t=tq.front();
+                cout<<tqs[t].front()<<endl;tqs[t].pop();
+                if(tqs[t].empty()) tq.pop();
+            }else if(op[0]=='E'){
+                cin>>p;
+                int t=teamOf[p];
+                if(tqs[t].empty()) tq.push(t);
+                tqs[t].push(p);
+            }
+        }
+        cout<<endl;
+    }
+    return 0;
+}
+
+//下面这种做法会超时，可能由于每次加入要对每个长队列的数进行n^2的检查，过于费时，还是用map直接记录快速。
+#include<iostream>
+#include<fstream>
+#include<stack>
+#include<set>
+#include<map>
+#include<vector>
+#include<cctype>
+#include<string>
+#include<algorithm>
+
+using namespace std;
+
+typedef deque<int> team;
+deque<team> teams={};
+deque<int> lt;
+
+void find_p(int p,int n,int& t,int& s)
+{
+    for(t=0;t!=n;t++)
+        for(s=0;s!=teams[t].size();s++)
+            if(teams[t][s]==p) return;
+}
+
+int main()
+{
+    int n,m,p,cnt;cnt=0;//return 0;
+
+    //fstream fstr("/home/rinker/Desktop/new file");
+    while(cin>>n&&n)
+    {
+        cnt++;teams={};
+        for(int i=0;i!=n;i++)
+        {
+            cin>>m;team t={};
+            while(m--)
+            {
+                cin>>p;
+                t.push_back(p);
+            }
+            teams.push_back(t);
+        }
+        cout<<"Scenario #"<<cnt<<endl;
+        string op;int t,s;
+        while(1)
+        {
+            std::_Deque_iterator<int, int&, int*> position;int f=0;
+            cin>>op;
+            if(op[0]=='S')break;
+            if(op[0]=='D'){
+                cout<<lt.front()<<endl;lt.pop_front();
+            }else{
+                cin>>p;
+                find_p(p,n,t,s);
+                for(auto w=lt.begin();w!=lt.end();w++)
+                    for(int u=0;u!=s;u++)
+                        if(teams[t][u]==(*w))
+                        {
+                            f=1;
+                            position=w;
+                            break;
+                        }
+                if(f)  lt.insert(++position,p);
+                else lt.push_back(p);
+            }
+        }
+        cout<<endl;
+    }
+    return 0;
+}
+

@@ -1,0 +1,116 @@
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+using namespace std;
+//写不出来累死了，用一份别人的orz		思路是一样的，就是写成外循环的IDA*形式更好一点，还有他这个类用的有点好看2333
+//字符串交换的方式比直接在原来的字符串上修改好，用s，e，p（开始点结束点插入点）生成新串，循环时更方便，还有就是前面是小于i，后面是从j+2开始的。
+class Board
+{
+public:
+    int a[16];
+    int h;
+    int n;
+    bool readIn()
+    {
+        int i;
+        scanf("%d",&n);
+        if(n == 0) return false;
+        for(i=0;i<n;i++)
+            scanf("%d",a+i);
+        return true;
+    }
+    void move(int s,int e,int p)
+    {
+        int t[16],i,j;
+        if(p<s)
+        {
+            for(i=0; i<p; i++)
+                t[i]=a[i];
+            for(j=s; j<=e; j++,i++)
+                t[i]=a[j];
+            for(j=p;j<s;j++,i++)
+                t[i]=a[j];
+            for(j=e+1;j<n;j++,i++)
+                t[i]=a[j];
+        }
+        else
+        {
+            for(i=0;i<s;i++)
+                t[i]=a[i];
+            for(j=e+1;j<p;j++,i++)
+                t[i]=a[j];
+            for(j=s;j<=e;j++,i++)
+                t[i]=a[j];
+            for(j=p;j<n;j++,i++)
+                t[i]=a[j];
+        }
+        memcpy(a,t,sizeof(t));
+    }
+    int getH()
+        {
+            int cnt,i;
+            cnt=0;
+            for(i=0;i<n-1;i++)
+            {
+                if(a[i+1]!=a[i]+1)
+                    cnt++;
+            }
+            if(a[i]!=n)
+                cnt++;
+            h=cnt;
+            return cnt;
+        }
+};
+int lim;
+int f(int dep,int h)
+{
+    return dep*3+h;
+}
+bool IDDFS(int dep,Board b)
+{
+    int i,j,k;
+    Board tb;
+    b.getH();
+    if(f(dep, b.h) > lim*3)
+        return false;
+    if(b.getH()==0)
+        return true;
+    for(i=0;i<b.n;i++)
+    {
+        for(j=i;j<b.n;j++)
+        {
+            for(k=0;k<i;k++)
+            {
+                tb=b;
+                tb.move(i,j,k);
+                if(IDDFS(dep+1,tb)==true)
+                    return true;
+            }
+            for(k=j+2;k<b.n;k++)
+            {
+                tb=b;
+                tb.move(i,j,k);
+                if(IDDFS(dep+1,tb)==true)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+int main()
+{
+    Board b;
+    int prob;
+    prob=1;
+    while(b.readIn()==true)
+    {
+        for(lim=0; ; lim++){
+            if(IDDFS(0,b)==true)
+            break;
+            }
+        printf("Case %d: %d\n",prob, lim);
+        prob++;
+    }
+    return 0;
+}
+

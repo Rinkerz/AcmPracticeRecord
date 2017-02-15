@@ -1,0 +1,83 @@
+//连通性的DFS，理清楚就不难
+#include<iostream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<algorithm>
+using namespace std;
+#define mem(x,y) memset(x,y,sizeof(x))
+
+const int INF=0x3f3f3f3f;
+typedef long long LL;
+const int MAXN=1010;
+int w,h,cnt;
+int mp[MAXN][MAXN];
+char ans[MAXN];
+char s[MAXN];
+char an[6]={'W','A','K','J','S','D'};
+char ch[]={'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+int disx[8]={0,0,1,-1};
+int disy[8]={1,-1,0,0};
+int p[16][4]={
+     {0,0,0,0},{0,0,0,1},{0,0,1,0},{0,0,1,1},
+  {0,1,0,0},{0,1,0,1},{0,1,1,0},{0,1,1,1},
+  {1,0,0,0},{1,0,0,1},{1,0,1,0},{1,0,1,1},
+  {1,1,0,0},{1,1,0,1},{1,1,1,0},{1,1,1,1}
+};
+void dfs(int x,int y){
+    if(x<0||y<0||x>w+1||y>4*h+1)return;
+    if(mp[x][y])return;
+    mp[x][y]=-1;
+    for(int i=0;i<4;i++)
+        dfs(x+disx[i],y+disy[i]);
+}
+void dfs2(int x,int y){
+    if(x<0||y<0||x>w||y>4*h)return;
+    if(mp[x][y]==-1)return;
+    if(mp[x][y]==0){
+        dfs(x,y);cnt++;
+        return;
+    }
+    mp[x][y]=-1;
+    for(int i=0;i<4;i++)
+        dfs2(x+disx[i],y+disy[i]);
+}
+int cmp(char a,char b){
+    return a<b;
+}
+int main(){
+    int k,l,kase=0;
+    while(scanf("%d %d",&w,&h),w|h){
+        mem(mp,0);
+        mem(ans,0);
+        for(int i=1;i<=w;i++){
+            scanf("%s",s);
+            l=1;
+            int len=strlen(s);
+            for(int j=0;j<h;j++){
+                for(k=0;k<16;k++)
+                    if(s[j]==ch[k]){
+                        for(int x=0;x<4;x++)
+                            mp[i][l++]=p[k][x];
+                        break;
+                    }
+            }
+        }
+        dfs(0,0);
+        k=0;
+        for(int i=0;i<=w;i++)
+            for(int j=0;j<4*h;j++){
+                if(mp[i][j]==1){
+                    cnt=0;
+                    dfs2(i,j);
+                    ans[k++]=an[cnt];
+                }
+            }
+            sort(ans,ans+k,cmp);
+            printf("Case %d: ",++kase);
+        for(int i=0;i<k;i++)printf("%c",ans[i]);
+        cout<<endl;
+    }
+    return 0;
+}
+

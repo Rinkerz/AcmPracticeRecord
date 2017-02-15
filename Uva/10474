@@ -1,0 +1,29 @@
+#include<iostream>
+#include<algorithm>
+
+using namespace std;
+
+int Ns[10000];
+
+int main()
+{
+    int N,Q;
+    int i,j,k,t;
+    for(i=1;;i++)
+    {
+        cin>>N>>Q;
+        if(N==0&&Q==0)  break;
+        for(j=0;j!=N;j++)
+            cin>>Ns[j];
+        sort(Ns,Ns+N);
+        cout<<"CASE# "<<i<<":"<<endl;
+        for(j=0;j!=Q;j++)
+        {
+            cin>>t;
+            k=lower_bound(Ns,Ns+N,t)-Ns;
+            if(Ns[k]!=t) cout<<t<<" not found"<<endl;//(k=lower_bound(Ns,Ns+N,t)-Ns)==N||
+            else cout<<t<<" found at "<<k+1<<endl;
+        }
+    }
+}
+//上面注释那里本来用了一个或来判断有没有数组越界，然后出错了，不知道为什么。。。

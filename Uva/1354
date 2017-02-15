@@ -1,0 +1,131 @@
+//这道题还没过。。。回头再看吧orz，下面有刘汝佳的ac代码，很精髓
+//先记一个重点吧，天平可能会存在比如左子天平的右臂超出母天平的右臂的情况，要考虑进去。
+#include<iostream>
+#include<fstream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<vector>
+#include<algorithm>
+using namespace std;
+#define MAXN 20
+#define mem(x) memset(x,0,sizeof(x))
+
+fstream fstr("/home/rinker/Desktop/new file");
+int n;double room_wid,ans;
+double a[MAXN];
+double lw[MAXN],rw[MAXN];
+//int l[MAXN],r[MAXN];
+int used[MAXN];
+
+
+
+void solve(int cur)
+{   //cout<<"cur:"<<cur<<" n:"<<n<<endl;
+    if(cur==n)  {
+        double mobile_wid=lw[2*n-1]+rw[2*n-1];
+        if(mobile_wid<room_wid&&ans<mobile_wid)  ans=mobile_wid;
+        return;
+    }
+    for(int i=1;i<n+cur;i++)
+        for(int j=1;j<n+cur;j++)    if(i!=j)
+        {//cout<<"! "<<!used[i]<<!used[j]<<endl;
+            if(!used[i]&&!used[j]){
+                used[i]=used[j]=1;
+                //l[cur+n]=i;r[cur+n]=j;
+                a[cur+n]=a[i]+a[j];
+				double l=a[j]/a[cur+n];
+				double r=1.0-l;
+                lw[cur+n]=max(l+lw[i],lw[j]-r);
+                rw[cur+n]=max(r+rw[j],rw[j]-l);
+                solve(cur+1);
+                used[i]=used[j]=0;
+            }
+        }
+    if(n==1||n==0)    ans=0;
+}
+
+int main()
+{
+    int kase;cin>>kase;
+    while(kase--)
+    {
+        mem(a);mem(used);mem(lw);mem(rw);ans=0;
+        cin>>room_wid>>n;
+        for(int i=1;i<=n;i++)
+            cin>>a[i];
+
+        ans=-1;
+        solve(1);
+        printf("%.15f\n",ans);
+    }
+    return 0;
+}
+//
+#include<cstdio>
+#include<cstring>
+#include<vector>
+using namespace std;
+
+struct Tree {
+  double L, R; // distance from the root to the leftmost/rightmost point
+  Tree():L(0),R(0) {}
+};
+FILE* in=fopen("/home/rinker/Desktop/new file","r");
+const int maxn = 6;
+
+int n, vis[1<<maxn];
+double r, w[maxn], sum[1<<maxn];
+vector<Tree> tree[1<<maxn];
+
+void dfs(int subset) {
+  if(vis[subset]) return;
+  vis[subset] = true;
+
+  bool have_children = false;
+  for(int left = (subset-1)&subset; left; left = (left-1)&subset) {//这里感觉很精髓，学习一下
+    have_children = true;
+
+    int right = subset^left;//由于left的来源，不可能出现某位subset为0，left为1.
+    double d1 = sum[right] / sum[subset];
+    double d2 = sum[left] / sum[subset];
+
+    dfs(left); dfs(right);//递归的边界在到达subset为1时，精髓。
+
+    for(int i = 0; i < tree[left].size(); i++)//自引用前为不断递归，之后为不断回溯，将合理的子树保存，达到剪枝效果。每次都把所有可能的左右子树拿出来穷举。
+      for(int j = 0; j < tree[right].size(); j++) {
+        Tree t;
+        t.L = max(tree[left][i].L + d1, tree[right][j].L - d2);
+        t.R = max(tree[right][j].R + d2, tree[left][i].R - d1);
+        if(t.L + t.R < r) tree[subset].push_back(t);
+      }
+  }
+
+  if(!have_children) tree[subset].push_back(Tree());//如果是底层，即没有子树，加颗空树用于上层的运算。
+}
+
+int main() {
+  int T;
+  fscanf(in,"%d", &T);
+  while(T--) {
+    fscanf(in,"%lf%d", &r, &n);
+    for(int i = 0; i < n; i++) fscanf(in,"%lf", &w[i]);
+    for(int i = 0; i < (1<<n); i++) {
+      sum[i] = 0;
+      tree[i].clear();
+      for(int j = 0; j < n; j++)
+        if(i & (1<<j)) sum[i] += w[j];
+    }
+
+    int root = (1<<n)-1;
+    memset(vis, 0, sizeof(vis));
+    dfs(root);
+
+    double ans = -1;
+    for(int i = 0; i < tree[root].size(); i++)
+      ans = max(ans, tree[root][i].L + tree[root][i].R);
+    printf("%.10lf\n", ans);
+  }
+  return 0;
+}
+

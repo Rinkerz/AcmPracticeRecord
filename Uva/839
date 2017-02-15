@@ -1,0 +1,33 @@
+//本题在递归中用引用传值，非常精致，学习一个
+#include<iostream>
+#include<fstream>
+#include<deque>
+#include<vector>
+#include<stack>
+
+using namespace std;
+//fstream fstr("/home/rinker/Desktop/new file");
+
+bool solve(int& w)
+{
+    int w1,d1,w2,d2;
+    bool b1=true,b2=true;
+    cin>>w1>>d1>>w2>>d2;
+    if(!w1) b1=solve(w1);
+    if(!w2) b2=solve(w2);
+    w=w1+w2;
+    return  b1&&b2&&(w1*d1==w2*d2);
+}
+
+int main()
+{
+    int n,w;
+    cin>>n;
+    while(n--)
+    {
+        if(solve(w)) cout<<"YES"<<endl;
+        else cout<<"NO"<<endl;
+        if(n) cout<<endl;
+    }
+}
+

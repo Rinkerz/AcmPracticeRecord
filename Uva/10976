@@ -1,0 +1,32 @@
+#include<iostream>
+#include<fstream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<vector>
+#include<algorithm>
+using namespace std;
+#define MAXN 10000
+#define mem(x) memset(x,0,sizeof(x))
+
+//fstream fstr("/home/rinker/Desktop/new file");
+int n;
+int x[MAXN],y[MAXN];
+
+
+
+int main()
+{
+    //int kase=1;
+    while(cin>>n)
+    {
+        int cnt=0;
+        for(int i=n+1;i<=2*n;i++)
+            if(n*i%(n-i)==0) {x[cnt]=n*i/(i-n);y[cnt++]=i;}		//本题一个是枚举范围用x<2n来确定，一个时判断y时用nx=y(x-n)，不要用1/y循环乘出1来找y，否则会超时，而且蠢。
+        cout<<cnt<<endl;
+        for(int i=0;i<cnt;i++)
+            cout<<"1/"<<n<<" = 1/"<<x[i]<<" + 1/"<<y[i]<<endl;
+    }
+    return 0;
+}
+

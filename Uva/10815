@@ -1,0 +1,32 @@
+#include<iostream>
+#include<sstream>
+#include<set>
+#include<cctype>
+#include<string>
+
+using namespace std;
+
+set<string> dic;
+
+int main()
+{
+    string line;
+    while(1)
+    {
+        if(cin.eof()) break;
+        getline(cin,line);
+        for(char& c:line)
+            if(!(isupper(c)||islower(c)))  c=' ';
+        stringstream l(line);
+        string word;
+        while(l>>word)
+        {
+            for(char& c:word)
+                c=tolower(c);
+            dic.insert(word);
+        }
+    }
+    for(auto i=dic.begin();i!=dic.end();i++)
+        cout<<*i<<endl;
+}
+

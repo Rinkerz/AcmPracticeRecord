@@ -1,0 +1,38 @@
+#include<iostream>
+#include<fstream>
+#include<map>
+#include<set>
+#include<cctype>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+string words[1000];
+
+int main()
+{
+    //fstream fstr("/home/rinker/Desktop/new file");
+    map<string,int> m;string word;int cnt(-1);
+    while(1)
+    {
+        cnt++;
+        cin>>words[cnt];word=words[cnt];
+        if(word=="#") break;
+        for(char& c:word)
+            c=tolower(c);
+        sort(word.begin(),word.end());
+        m[word]+=1;
+    }
+    set<string> s;
+    for(int i=0;i!=cnt;i++)
+    {
+        word=words[i];
+        for(char& c:word)
+            c=tolower(c);
+        sort(word.begin(),word.end());
+        if(m[word]==1)  s.insert(words[i]);
+    }
+    for(auto &w:s)
+        cout<<w<<endl;
+}
+

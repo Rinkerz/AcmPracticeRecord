@@ -1,0 +1,74 @@
+#include<iostream>
+#include<cstring>
+#include<queue>
+#include <fstream>
+#include<algorithm>
+using namespace std;
+#define maxn (200+5)
+#define mem(x,y) memset(x,y,sizeof(x))
+#define _b " "
+struct Node{
+    int v[3],dist;
+    Node():v({0,0,0}),dist(0){}
+    bool operator<(const Node& rhs)const{
+        return dist>rhs.dist;
+    }
+};
+
+int vis[maxn][maxn],cap[3],ans[maxn];//用ans保存对应不同的d的倒水量，因为一直优先用倒水量少的结点，所以遍历更快
+
+void update_ans(Node u)
+{
+    for(int i=0;i<3;i++){
+        int d=u.v[i];
+        if(ans[d]<0||u.dist<ans[d]) ans[d]=u.dist;
+    }
+
+}
+
+void solve(int a,int b,int c,int d)
+{
+    cap[0]=a;cap[1]=b;cap[2]=c;
+    mem(vis,0);mem(ans,-1);priority_queue<Node> q;
+    Node start;start.v[2]=c;
+    q.push(start);
+
+    vis[0][0]=1;
+    while(!q.empty())
+    {
+        Node u=q.top();q.pop();
+        update_ans(u);
+        if(ans[d]>=0)break;//如果已经得到了d的正倒水量，由优先队列特性可知就是最小量。
+        for(int i=0;i<3;i++)
+            for(int j=0;j<3;j++)    if(i!=j){
+                if(u.v[i]==0||u.v[j]==cap[j])   continue;
+                int amount = min(cap[j],u.v[i]+u.v[j])-u.v[j];
+                Node u2;
+                memcpy(&u2,&u,sizeof(u));
+                u2.dist=u.dist+amount;u2.v[i]-=amount;u2.v[j]+=amount;
+                if(!vis[u2.v[0]][u2.v[1]]){
+                    vis[u2.v[0]][u2.v[1]]=1;
+                    q.push(u2);
+                }
+            }
+    }
+    while(d>=0)
+    {
+        if(ans[d]>=0){
+            cout<<ans[d]<<_b<<d<<endl;
+            return;
+        }
+        d--;
+    }
+}
+
+int main() {
+    int cas = 0;cin>>cas;int a,b,c,d;
+    while (cas--) {
+        cin>>a>>b>>c>>d;
+        solve(a,b,c,d);
+
+    }
+    return 0;
+}
+

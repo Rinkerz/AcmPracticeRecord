@@ -1,0 +1,70 @@
+/*
+1、学习一下这种建立数据与id关联的方法，本例中用的是map和vector建立set<int>与int的关联
+2、学会使用algorithm头文件中几个算法。分别五个参数：集合一的始末，集合二的始末，一个插入迭代器。
+第一个比较通用，好像不能对集合用。
+merge() //归并两个序列，元素总个数不变，只是将两上子有序序列归并为一个有序序列。
+下四个都是集合专用。
+set_union() //实现求集合A，B的并。
+set_difference()//实现求集合A，B的差（即A—B）
+set_symmetric_difference()//实现求集合A，B的对称差（即(A-B)并(B-A))
+set_intersection()//实现求集合A，B交集。 
+3、学着使用宏简化程序
+4、头文件一定要写全！！本地cb好像会自动补全需要的头文件
+*/
+#include<iostream>
+#include<fstream>
+#include<stack>
+#include<set>
+#include<map>
+#include<vector>
+#include<string>
+#include<algorithm>
+
+#define SET(x)  x.begin(),x.end()
+#define INS(x)  inserter(x,x.begin())
+
+using namespace std;
+
+stack<int> st;
+map<set<int>,int> SETtoID;
+vector<set<int>> IDtoSET;
+
+int ID(set<int> s)
+{
+    if(SETtoID.count(s)) return SETtoID[s];
+    IDtoSET.push_back(s);
+    return SETtoID[s]=IDtoSET.size()-1;
+}
+
+int main()
+{
+    //fstream fstr("/home/rinker/Desktop/new file");
+
+    int T,N;string op;
+    cin>>T;
+    for(int i=0;i!=T;i++)
+    {
+        cin>>N;set<int> s;
+        for(int j=0;j!=N;j++)
+        {
+            cin>>op;
+            if(op[0]=='P') st.push(ID(set<int>()));
+            else if(op[0]=='D') st.push(st.top());
+            else
+            {
+                set<int> s1,s2,s;
+                s1=IDtoSET[st.top()];st.pop();
+                s2=IDtoSET[st.top()];st.pop();
+                switch(op[0]){
+                case 'U':   set_union(SET(s1),SET(s2),INS(s));break;
+                case 'I':   set_intersection(SET(s1),SET(s2),INS(s));break;
+                case 'A':   s=s2;s.insert(ID(s1));break;
+                }
+                st.push(ID(s));
+            }
+            cout<<IDtoSET[st.top()].size()<<endl;
+        }
+        cout<<"***"<<endl;
+    }
+}
+

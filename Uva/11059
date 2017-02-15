@@ -1,0 +1,42 @@
+//格式出了错，可怕的Uva格式。。
+#include<iostream>
+#include<fstream>
+#include<cstdio>
+#include<cstring>
+#include<cmath>
+#include<vector>
+#include<algorithm>
+using namespace std;
+#define MAXN 20
+#define mem(x) memset(x,0,sizeof(x))
+
+//fstream fstr("/home/rinker/Desktop/new file");
+int n;
+int a[MAXN];
+
+long long Cal(int i,int j)
+{
+    long long ans=1;
+    for(int k=i;k<=j;k++)
+        ans*=a[k];
+    return ans;
+}
+
+int main()
+{
+    int kase=1;
+    while(cin>>n)
+    {
+        mem(a);int cnt1,cnt2;long long ans=0;
+        for(int i(0);i<n;i++)
+            cin>>a[i];
+
+        for(int i=0;i<n;i++)
+            for(int j=i;j<n;j++)
+                ans = max(ans,Cal(i,j));
+
+        cout<<"Case #"<<kase++<<": "<<"The maximum product is "<<ans<<"."<<endl<<endl;
+    }
+    return 0;
+}
+
