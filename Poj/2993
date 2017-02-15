@@ -1,0 +1,206 @@
+#include<iostream>
+#include<sstream>
+#include<vector>
+#include<map>
+#include<algorithm>
+#include<cctype>
+
+using namespace std;
+
+map<char,int> col({{'a',0},{'b',1},{'c',2},{'d',3},{'e',4},{'f',5},{'g',6},{'h',7}});
+
+
+void rp(char& ch)
+{
+    if(ch==',') ch=' ';
+}
+
+int main()
+{
+    string w,b;
+    getline(cin,w);
+    getline(cin,b);
+    w.erase(0,7);b.erase(0,7);
+    for_each(w.begin(),w.end(),rp);for_each(b.begin(),b.end(),rp);
+    stringstream win(w);stringstream bin(b);
+
+    int i,j;char c[17][33];
+    for(i=0;i!=17;i++)
+        for(j=0;j!=33;j++)
+            c[i][j]='#';
+    string tmp;char t;
+    while(!win.eof())
+    {
+        win>>tmp;
+        if(tmp.size()==3)   c[((9-tmp[2]+'0'))*2-1][(col[tmp[1]]+1)*4-2]=tmp[0];//cout<<((9-tmp[2]+'0'))*2-1<<" "<<(col[tmp[1]]+1)*4-1<<endl;//
+        else    c[((9-tmp[1]+'0'))*2-1][(col[tmp[0]]+1)*4-2]='P';//cout<<((9-tmp[1]+'0'))*2-1<<" "<<(col[tmp[0]]+1)*4-1<<endl;
+    }
+    while(!bin.eof())
+    {
+        bin>>tmp;
+        if(tmp.size()==3)   c[((9-tmp[2]+'0'))*2-1][(col[tmp[1]]+1)*4-2]=tolower(tmp[0]);//cout<<((9-tmp[2]+'0'))*2-1<<" "<<(col[tmp[1]]+1)*4-1<<endl;//
+        else    c[((9-tmp[1]+'0'))*2-1][(col[tmp[0]]+1)*4-2]='p';//cout<<((9-tmp[1]+'0'))*2-1<<" "<<(col[tmp[0]]+1)*4-1<<endl;
+    }
+    for(i=0;i<18;i+=2)
+    {
+        for(j=0;j<33;j++)
+            c[i][j]='-';
+        for(j=0;j<33;j+=4)
+            c[i][j]='+';
+    }
+
+    for(i=1;i<17;i+=2)
+    {
+        for(j=0;j<33;j+=4)
+            c[i][j]='|';
+        if(i%4==1){
+        for(j=1;j<33;j+=8)
+            if(j%8==2){c[i][j]=c[i][j+2]=':';if(c[i][j+1]=='#')c[i][j+1]=':';}
+            else {c[i][j]=c[i][j+2]='.';if(c[i][j+1]=='#')c[i][j+1]='.';}
+        for(j=5;j<33;j+=8)
+            if(j%8==6){c[i][j]=c[i][j+2]='.';if(c[i][j+1]=='#')c[i][j+1]='.';}
+            else {c[i][j]=c[i][j+2]=':';if(c[i][j+1]=='#')c[i][j+1]=':';}
+        }else if(i%4==3){
+        for(j=1;j<33;j+=8)
+            if(j%8==2){c[i][j]=c[i][j+2]='.';if(c[i][j+1]=='#')c[i][j+1]='.';}
+            else {c[i][j]=c[i][j+2]=':';if(c[i][j+1]=='#')c[i][j+1]=':';}
+        for(j=5;j<33;j+=8)
+            if(j%8==6){c[i][j]=c[i][j+2]=':';if(c[i][j+1]=='#')c[i][j+1]=':';}
+            else {c[i][j]=c[i][j+2]='.';if(c[i][j+1]=='#')c[i][j+1]='.';}
+        }
+
+
+    }
+    for(i=0;i!=17;i++){
+        for(j=0;j!=33;j++)
+            cout<<c[i][j];
+        cout<<endl;
+    }
+
+    return 0;
+}
+
+//以下能通过poj
+//上面的不能编译成功不知道为什么，cb上能跑
+#include <stdio.h>
+#include <string.h>
+
+char strData[100];
+char chessName[] = ":KQRBNPkqrbnp";
+
+int chessBoard[20][20];
+
+void processChessData(char chessData[], int add)
+{
+	int type = add + 5;
+	int row, col;
+	for (int i = 0; chessData[i] != '\0'; ++ i)
+	{
+		if (strData[i] == ',')
+		{
+			continue;
+		}
+
+		if (strData[i] >= 'A' && strData[i] <= 'Z')
+		{
+			switch (strData[i])
+			{
+			case 'K':
+				type = add + 0;
+				break;
+			case 'Q':
+				type = add + 1;
+				break;
+			case 'R':
+				type = add + 2;
+				break;
+			case 'B':
+				type = add + 3;
+				break;
+			case 'N':
+				type = add + 4;
+				break;
+			}
+			continue;
+		}
+
+		if (strData[i] >= 'a' && strData[i] <= 'z')
+		{
+			col = strData[i] - 'a';
+			continue;
+		}
+
+		if (strData[i] >= '0' && strData[i] <= '9')
+		{
+			row = '8' - strData[i];
+			chessBoard[row][col] = type;
+
+			type = add + 5;
+			continue;
+		}
+	}
+}
+
+void inputData()
+{
+	memset(chessBoard, 0, sizeof(chessBoard));
+
+	scanf("%s", &strData);
+	scanf("%s", &strData);
+	processChessData(strData, 1);
+	scanf("%s", &strData);
+	scanf("%s", &strData);
+	processChessData(strData, 7);
+}
+
+void process()
+{
+	for (int i = 0; i < 17; ++ i)
+	{
+		if ((i & 1) == 0)
+		{
+			printf("+---+---+---+---+---+---+---+---+\n");
+			continue;
+		}
+
+		printf("|");
+
+		char color = '.';
+		int row = ((i - 1) >> 1);
+		if (row & 1)
+		{
+			color = ':';
+		}
+
+		for (int j = 0; j < 8; ++ j)
+		{
+			printf("%c", color);
+			if (chessBoard[(i - 1) >> 1][j] == 0)
+			{
+				printf("%c", color);
+			}
+			else
+			{
+				printf("%c", chessName[chessBoard[row][j]]);
+			}
+			printf("%c|", color);
+
+			if (color == '.')
+			{
+				color = ':';
+			}
+			else
+			{
+				color = '.';
+			}
+		}
+		printf("\n");
+	}
+}
+
+int main()
+{
+	inputData();
+	process();
+	return 0;
+}

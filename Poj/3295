@@ -1,0 +1,51 @@
+#include<iostream>
+#include<cstring>
+#include<cassert>
+
+using namespace std;
+
+string s;int cur;char a[5];
+
+void Change(char i)//穷举时改变数组用的函数
+{
+    for(int j=0;j!=5;j++)
+        a[j]=((i>>j)&00000001);
+}
+bool Cal()//递归
+{
+    char c=s[cur];bool w,x;
+    cur++;
+    switch(c){
+    case 'p':return a[0];
+    case 'q':return a[1];
+    case 'r':return a[2];
+    case 's':return a[3];
+    case 't':return a[4];
+    case 'N':return !Cal();
+    case 'K':w=Cal();x=Cal();return (w&&x);
+    case 'A':w=Cal();x=Cal();return (w||x);
+    case 'C':w=Cal();x=Cal();return (w<=x);
+    case 'E':w=Cal();x=Cal();return (w==x);
+    default :return 0;
+    }
+}
+int main()
+{
+    int f;
+    while(1)
+    {
+        cin>>s;
+        if(s=="0")  break;
+        f=1;
+        for(char i=0;i!=32;i++)
+        {
+            cur=0;Change(i);
+            if(!Cal()) {f=0;break;}
+        }
+        if(f==1) cout<<"tautology"<<endl;
+        else cout<<"not"<<endl;
+
+    }
+    return 0;
+}
+

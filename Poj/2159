@@ -1,0 +1,70 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+
+using namespace std;
+
+int isPermutated(string a,string b)
+{
+    for(char c:a)
+    {
+        auto t=b.find(c);
+        if(t<b.length())
+            b.erase(t,1);
+    }
+    if(b.empty()) return 1;
+    else return 0;
+}
+
+int main()
+{
+    string a,b;int f;
+    cin>>a>>b;
+    for(int i=0;i!=26;i++)
+    {
+        for(char &c:a)
+            if(c=='Z')c='A';
+            else c+=1;
+        if(isPermutated(a,b))
+        {
+            cout<<"YES"<<endl;
+            f=0;break;
+        }
+    }
+    if(f) cout<<"NO"<<endl;
+    return 0;
+}
+
+//以上需要c++标准
+//以下为poj通过的结果
+#include <cstdio>
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+int main()
+{
+    char af[105];
+    char ori[105];
+    int atime[30] = {0};
+    int otime[30] = {0};
+    scanf("%s%s", af, ori);
+    for(int i = 0; i < strlen(af); i++)
+    {
+        atime[af[i] - 'A']++;
+        otime[ori[i] - 'A']++;
+    }
+    sort(atime, atime + 26);
+    sort(otime, otime + 26);
+    for(int i = 0; i < 26; i++)
+    {
+        if(atime[i] != otime[i])
+        {
+            printf("NO");
+            return 0;
+        }
+    }
+    printf("YES");
+    return 0;
+}

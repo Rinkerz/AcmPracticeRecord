@@ -1,0 +1,92 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+
+using namespace std;
+typedef struct pos{
+    int x,y;
+}pos;
+
+pos K,Q,k,q;
+vector<pos> R;vector<pos> r;
+vector<pos> B;vector<pos> b;
+vector<pos> N;vector<pos> n;
+vector<pos> P;vector<pos> p;
+string col("abcdefgh");
+
+bool cmp(pos p,pos q)
+{
+    return p.x>q.x;
+}
+
+bool cmp2(pos p,pos q)
+{
+    return p.y<q.y;
+}
+
+bool cmp3(pos p,pos q)
+{
+    return p.y>q.y;
+}
+
+pos makpos(int x,int y)
+{
+    pos p;p.x=x;p.y=y;
+    return p;
+}
+
+int main()
+{
+    int t;
+    int i,j;char c[17][33];
+    for(i=0;i!=17;i++)
+        for(j=0;j!=33;j++)
+            cin>>c[i][j];
+    for(i=0;i!=8;i++)
+        for(j=0;j!=8;j++)
+            switch(c[1+2*i][2+4*j]){
+            case'K':K=makpos(i,j);break;
+            case'k':k=makpos(i,j);break;
+            case'Q':Q=makpos(i,j);break;
+            case'q':q=makpos(i,j);break;
+            case'R':R.push_back(makpos(i,j));break;
+            case'r':r.push_back(makpos(i,j));break;
+            case'B':B.push_back(makpos(i,j));break;
+            case'b':b.push_back(makpos(i,j));break;
+            case'N':N.push_back(makpos(i,j));break;
+            case'n':n.push_back(makpos(i,j));break;
+            case'P':P.push_back(makpos(i,j));break;
+            case'p':p.push_back(makpos(i,j));break;
+            }
+
+    sort(R.begin(),R.end(),cmp2);
+    sort(B.begin(),B.end(),cmp2);
+    sort(N.begin(),N.end(),cmp2);
+    sort(P.begin(),P.end(),cmp2);
+    sort(R.begin(),R.end(),cmp);
+    sort(B.begin(),B.end(),cmp);
+    sort(N.begin(),N.end(),cmp);
+    sort(P.begin(),P.end(),cmp);
+
+    cout<<"White: K"<<col[K.y]<<(8-K.x)<<",Q"<<col[Q.y]<<(8-Q.x);
+    for(t=0;t!=R.size();t++)    cout<<",R"<<col[R[t].y]<<(8-R[t].x);
+    for(t=0;t!=B.size();t++)    cout<<",B"<<col[B[t].y]<<(8-B[t].x);
+    for(t=0;t!=N.size();t++)    cout<<",N"<<col[N[t].y]<<(8-N[t].x);
+    for(t=0;t!=P.size();t++)    cout<<","<<col[P[t].y]<<(8-P[t].x);cout<<endl;
+
+    sort(r.begin(),r.end(),cmp3);
+    sort(b.begin(),b.end(),cmp3);
+    sort(n.begin(),n.end(),cmp3);
+    sort(p.begin(),p.end(),cmp3);
+    sort(r.begin(),r.end(),cmp);
+    sort(b.begin(),b.end(),cmp);
+    sort(n.begin(),n.end(),cmp);
+    sort(p.begin(),p.end(),cmp);
+
+    cout<<"Black: K"<<col[k.y]<<(8-k.x)<<",Q"<<col[q.y]<<(8-q.x);
+    for(t=r.size()-1;t>-1;t--)    cout<<",R"<<col[r[t].y]<<(8-r[t].x);
+    for(t=b.size()-1;t>-1;t--)    cout<<",B"<<col[b[t].y]<<(8-b[t].x);
+    for(t=n.size()-1;t>-1;t--)    cout<<",N"<<col[n[t].y]<<(8-n[t].x);
+    for(t=p.size()-1;t>-1;t--)    cout<<","<<col[p[t].y]<<(8-p[t].x);
+}
+

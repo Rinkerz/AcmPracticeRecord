@@ -1,0 +1,53 @@
+#include <iostream>
+
+using namespace std;
+int added[100][100];
+
+int main()
+{
+    int tmp,f,len,cnt1,cnt2,n,sum;
+
+    int ans[102];
+    string str;
+
+    cnt1=0;sum=0;tmp=0;
+
+    while(1)
+    {
+        getline(cin,str);
+        if(str=="0") break;//不能str=='0';要防止前导0
+        len = str.length();
+        for(cnt2=0;cnt2!=len;cnt2++)
+            added[cnt1][100-len+cnt2]=str[cnt2]-'0';
+        cnt1++;
+    }
+
+    /*for(int i=0;i!=100;i++)
+    {
+        for(int j=0;j!=100;j++)
+            cout<<added[i][j];
+        cout<<endl;
+    }*/
+
+    for(cnt2=99;cnt2!=-1;cnt2--)
+    {
+        n=cnt1;
+        for(cnt1=0;n!=cnt1;cnt1++)
+            sum+=added[cnt1][cnt2];
+        sum+=tmp;
+        ans[cnt2+2]=sum%10;
+        tmp=sum/10;
+        sum=0;
+    }
+
+    ans[1]=tmp%10;
+    ans[0]=tmp/10;
+
+    n=0;
+    while(!ans[n])
+        n++;
+    for(;n!=102;n++)
+        cout<<ans[n];
+    return 0;
+}
+

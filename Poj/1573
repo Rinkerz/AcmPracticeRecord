@@ -1,0 +1,33 @@
+#include<iostream>
+#include<deque>
+
+using namespace std;
+char grid[102][102];
+int vis[102][102];
+int main()
+{
+    int r,c,e;
+    int m,n,x,y,cnt,f;
+    while(1)
+    {
+        cin>>r>>c>>e;if(r==0&&c==0) break;
+        for(m=0;m!=102;m++)for(n=0;n!=102;n++){grid[m][n]='#';vis[m][n]=-1;}
+        for(m=r;m!=0;m--)for(n=1;n!=c+1;n++)cin>>grid[m][n];
+        x=r;y=e;cnt=0;f=0;
+        while(1)
+        {
+            if(vis[x][y]!=-1)   {cout<<vis[x][y]<<" step(s) before a loop of "<<cnt-vis[x][y]<<" step(s)"<<endl;break;}
+            vis[x][y]=cnt;
+            switch(grid[x][y]){
+            case '#':cout<<cnt<<" step(s) to exit"<<endl;f=1;break;
+            case 'N':x++;break;
+            case 'S':x--;break;
+            case 'W':y--;break;
+            case 'E':y++;break;
+            }
+            cnt++;
+            if(f) break;
+        }
+    }
+}
+

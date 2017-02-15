@@ -1,0 +1,35 @@
+#include <iostream>
+
+using namespace std;
+
+string getPostorderdStr(string s1,string s2)
+{
+    string s11,s12,s21,s22;
+    string str;
+    if(s1==s2&&s1.length()==1) return s1;//同为"ABCD"的先序和中序，他们的后序是不同的，要加一条限制长度为一
+    if(s1.empty()) return string("");
+    int i = s2.find(s1[0]);
+    s11 = s1.substr(1,i);s12 = s1.substr(i+1,s2.length()-i-1);
+    s21 = s2.substr(0,i);s22 = s2.substr(i+1,s2.length()-i-1);
+    str=getPostorderdStr(s11,s21)+getPostorderdStr(s12,s22);
+    str.push_back(s1[0]);
+    return str;
+}
+
+int main()
+{
+    string s1,s2,s3;
+    while(!cin.eof())
+    {
+        if(cin>>s1>>s2)
+        {
+            s3=getPostorderdStr(s1,s2);
+        }
+        else break;
+        cout<<s3<<endl;
+    }
+    return 0;
+}
+
+
+

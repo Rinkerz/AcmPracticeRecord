@@ -1,0 +1,45 @@
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+int isPrime(int N)
+{
+    int i;
+    if(N==1) return 0;
+    for(i=2;i<=sqrt(N+0.5);i++)
+        if(N%i==0) return 0;
+    return 1;
+}
+
+void printAns(int n)
+{
+    int i;
+    for(i=3;i<=n/2;i+=2)//+=2换成++会tle。。。
+        if(isPrime(i)&&isPrime(n-i))
+        {
+            cout<<n<<" = "<<i<<" + "<<n-i<<endl;
+            return;
+        }
+}
+
+int main()
+{
+    int n;
+    while(1)
+    {
+        cin>>n;
+        if(!n) break;
+        printAns(n);
+    }
+    return 0;
+}
+/*
+int main()
+{
+    int n;
+    n=isPrime(4);
+    cout<<n;
+}
+*/
+

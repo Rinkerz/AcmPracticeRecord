@@ -1,0 +1,69 @@
+/*
+跪着把心得写一下orz，第一道poj上完成的模拟题做了整整一下午，三小时。。。
+1、不要数组越界，用r.py+re+1<B?r.py+re+1:B+1来区分会不会超出边界的两种情况，在输出时直接崩溃出现乱数，断错误都可能是数组越界
+2、不要弄错边界，比如for(k=r.py;k!=(r.py+re+1<B?r.py+re+1:B+1);k++)中，不是B是B+1。。。
+3、机器人移动时要一格格判断，有可能先撞到机器人再撞到边界，此外可能一条线上有两个机器人，所以使用循环语句的话需要break
+4、最重要的，string::find返回的是不是int类型！是一种unsigned的size_t，计算中需要变负的话要进行类型转化。
+*/
+
+#include<iostream>
+#include<deque>
+
+using namespace std;
+
+typedef struct{
+    int no;
+    int px,py;
+    char dir;
+}rob;
+
+const string direction("WNES");
+deque<rob> robs;
+int pos[102][102];
+
+rob make_rob(int no,int px,int py,char dir)
+{
+    rob r;
+    r.no=no;r.px=px;r.py=py;r.dir=dir;
+    return r;
+}
+
+int main()
+{
+    int cases,i,j,k,A,B,N,M,f;int m,n;
+    int px,py;char dir;
+    int ro,re;char act;
+    cin>>cases;
+    for(i=0;i!=cases;i++)
+    {
+        robs={};for(m=0;m!=101;m++)for(n=0;n!=102;n++)pos[m][n]=0;f=1;
+        cin>>A>>B>>N>>M;
+        for(j=1;j!=N+1;j++)
+        {
+            cin>>px>>py>>dir;
+            pos[px][py]=j;
+            robs.push_back(make_rob(j,px,py,dir));
+        }
+        for(j=0;j!=M;j++)
+        {
+            cin>>ro>>act>>re;
+            if(f){
+            rob& r=robs.at(ro-1);pos[r.px][r.py]=0;
+            switch(act){
+            case 'L':re%=4;r.dir=direction[(int)direction.find(r.dir)-re>=0?(int)direction.find(r.dir)-re:(int)direction.find(r.dir)-re+4];break;
+            case 'R':re%=4;r.dir=direction[(int)direction.find(r.dir)+re<4?(int)direction.find(r.dir)+re:(int)direction.find(r.dir)+re-4];break;
+            case 'F':switch(r.dir){
+                    case 'W':for(k=r.px;k!=(r.px-re-1>0?r.px-re-1:1);k--)if(pos[k][r.py]!=0){f=0;cout<<"Robot "<<r.no<<" crashes into robot "<<pos[k][r.py]<<endl;break;}r.px-=re;break;
+                    case 'N':for(k=r.py;k!=(r.py+re+1<B?r.py+re+1:B+1);k++)if(pos[r.px][k]!=0){f=0;cout<<"Robot "<<r.no<<" crashes into robot "<<pos[r.px][k]<<endl;break;}r.py+=re;break;
+                    case 'E':for(k=r.px;k!=(r.px+re+1<A?r.px+re+1:A+1);k++)if(pos[k][r.py]!=0){f=0;cout<<"Robot "<<r.no<<" crashes into robot "<<pos[k][r.py]<<endl;break;}r.px+=re;break;
+                    case 'S':for(k=r.py;k!=(r.py-re-1>0?r.py-re-1:1);k--)if(pos[r.px][k]!=0){f=0;cout<<"Robot "<<r.no<<" crashes into robot "<<pos[r.px][k]<<endl;break;}r.py-=re;break;
+                    }
+            }
+            if((r.px<1||r.px>A||r.py<1||r.py>B)&&f==1)  {f=0;cout<<"Robot "<<r.no<<" crashes into the wall"<<endl;}
+            if(f==1)pos[r.px][r.py]=r.no;
+            }
+        }
+        if(f)   cout<<"OK"<<endl;
+    }
+}
+

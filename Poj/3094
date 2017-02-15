@@ -1,0 +1,29 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    string str;
+    char i;
+    int cnt,sum,f,cnt_ch;
+    f=1;
+    while(f)
+    {
+        cnt = 1;
+        sum = 0;
+        getline(cin,str);
+        for(cnt_ch=0;str[cnt_ch];cnt_ch++)
+        {
+            i=str[cnt_ch];
+            if(i=='#')
+                f=0;
+            else if(i<'A'||i>'Z')
+                cnt++;
+            else
+                {sum += (i-'A'+1)*cnt;cnt++;}
+        }
+        if(f) cout<<sum<<endl;
+    }
+}
+

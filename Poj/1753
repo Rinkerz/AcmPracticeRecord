@@ -1,0 +1,132 @@
+#include <iostream>
+#include <string>
+#include <cstring>
+
+using namespace std;
+
+int r=0;
+int pieces[4][4],tmp[4][4];
+
+void flip(int i,int j)
+{
+    r++;
+    tmp[i][j]=-tmp[i][j];
+    if(i>0) tmp[i-1][j]=-tmp[i-1][j];
+    if(i<3) tmp[i+1][j]=-tmp[i+1][j];
+    if(j>0) tmp[i][j-1]=-tmp[i][j-1];
+    if(j<3) tmp[i][j+1]=-tmp[i][j+1];
+//下面注释的这种写法是错误的，并不能检查数组越界，会访问不该访问的内存
+/*
+void flip(int i,int j)
+{
+    r++;
+    tmp[i][j]=-tmp[i][j];
+    if(tmp[i-1][j]) tmp[i-1][j]=-tmp[i-1][j];
+    if(tmp[i+1][j]) tmp[i+1][j]=-tmp[i+1][j];
+    if(tmp[i][j-1]) tmp[i][j-1]=-tmp[i][j-1];
+    if(tmp[i][j+1]) tmp[i][j+1]=-tmp[i][j+1];
+
+}
+*/
+}
+
+void changeTmpBy(int k)
+{
+    string s;
+    switch(k){
+    case 0: s="0000";break;
+    case 1: s="0001";break;
+    case 2: s="0010";break;
+    case 3: s="0011";break;
+    case 4: s="0100";break;
+    case 5: s="0101";break;
+    case 6: s="0110";break;
+    case 7: s="0111";break;
+    case 8: s="1000";break;
+    case 9: s="1001";break;
+    case 10:s="1010";break;
+    case 11:s="1011";break;
+    case 12:s="1100";break;
+    case 13:s="1101";break;
+    case 14:s="1110";break;
+    case 15:s="1111";break;
+    }
+    for(int i=0;i!=4;i++)
+    {
+        if(s[i]=='1')   flip(0,i);
+    }
+}
+
+int getAnsB()
+{
+    int i,j;int f;
+    for(i=1;i!=4;i++)
+        for(j=0;j!=4;j++)
+            if(tmp[i-1][j]==-1) flip(i,j);
+
+    for(j=0;j!=4;j++)
+    {
+        if(tmp[3][j]==-1) return 0;
+    }
+    //cout<<"b "<<r<<endl;
+    return 1;
+}
+
+int getAnsW()
+{
+    int i,j;int f;
+    for(i=1;i!=4;i++)
+        for(j=0;j!=4;j++)
+            if(tmp[i-1][j]==1) flip(i,j);
+
+    for(j=0;j!=4;j++)
+    {
+        if(tmp[3][j]==1) return 0;
+    }
+    //cout<<"w "<<r<<endl;
+    return 1;
+}
+
+int main()
+{
+    int i,j,k,ans1,ans2;
+    int round=17;
+    char c;
+    for(i=0;i!=4;i++)
+        for(j=0;j!=4;j++)
+        {
+            cin>>c;
+            if(c=='b')//'b'->1,'w'->-1;
+                pieces[i][j]=tmp[i][j]=1;
+            else
+                pieces[i][j]=tmp[i][j]=-1;
+        }
+
+    for(k=0;k!=16;k++)
+    {
+        r=0;
+        for(i=0;i!=4;i++)
+            for(j=0;j!=4;j++)
+                    tmp[i][j]=pieces[i][j];
+
+        changeTmpBy(k);
+
+        if(getAnsB()&&round>r)
+            round=r;
+
+        r=0;
+        for(i=0;i!=4;i++)
+            for(j=0;j!=4;j++)
+                    tmp[i][j]=pieces[i][j];
+
+        changeTmpBy(k);
+
+        if(getAnsW()&&round>r)
+            round=r;
+    }
+
+    if(round==17) cout<<"Impossible";
+    else cout<<round;
+
+}
+

@@ -1,0 +1,41 @@
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+string  s;
+
+int main()
+{
+    int n,m,i,j,k,x,y;cin>>n;
+    for(i=0;i!=n;i++)
+    {
+        s="";
+        x=y=0;
+        cin>>m;
+        for(j=0;j!=m;j++)
+        {
+            y=x;cin>>x;
+            for(k=0;k!=(x-y);k++)
+            {
+                s.push_back('(');
+            }s.push_back(')');
+        }
+        for(j=0;j!=s.size();j++)
+        {
+            x=y=0;
+            if(s[j]==')')
+            {
+                for(k=j-1;k!=-1;k--)
+                {
+                    if(s.at(k)==')')   x++;
+                    if(s[k]=='(')   y++;
+                    if(y-x==1)  break;
+                }
+                cout<<y;if(j!=s.size()-1)   cout<<' ';
+            }
+        }
+        cout<<endl;
+    }
+}
+
